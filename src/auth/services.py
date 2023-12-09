@@ -54,6 +54,7 @@ async def confirm_otp_code(session: AsyncSession, otp: ConfirmOTP, code_type: st
 
     if db_otp.otp_code != otp.code:
         db_otp.attempt -= 1
+        session.add(db_otp)
         await session.commit()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -61,6 +62,7 @@ async def confirm_otp_code(session: AsyncSession, otp: ConfirmOTP, code_type: st
         )
     if db_otp.otp_type != code_type:
         db_otp.attempt -= 1
+        session.add(db_otp)
         await session.commit()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -72,6 +74,7 @@ async def confirm_otp_code(session: AsyncSession, otp: ConfirmOTP, code_type: st
             detail=f"Code already confirmed!",
         )
     db_otp.confirmed = True
+    session.add(db_otp)
     await session.commit()
     return {"ditail": "Email confirmed", "status": status.HTTP_200_OK}
 
@@ -92,7 +95,7 @@ async def create_user(session: AsyncSession, user: UserCreate):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User already exist!",
         )
-    if otp is None or otp.used is False:
+    if otp is None or otp.confirmed is False:
         await session.close()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -175,5 +178,6 @@ async def change_password(
     user_model: None | User = await session.scalar(stmt)
     user_model.hashed_password = hash_password(user.password)
     otp.used = True
+    session.add(otp)
     await session.commit()
     return {"detail": "Password changed!", "status": status.HTTP_200_OK}
