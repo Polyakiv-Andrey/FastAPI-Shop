@@ -50,3 +50,50 @@ async def decode_jwt(
     )
 
     return decoded
+
+
+async def create_access_token_from_refresh(
+        refresh_token: str,
+        session: AsyncSession,
+):
+    try:
+        user_info = await decode_jwt(token=refresh_token, session=session)
+        if user_info["type"] == "refresh_token":
+            if user_info["exp"] >= datetime.utcnow().timestamp():
+                new_exp_time = datetime.utcnow() + settings.auth_jwt.access_token_expire
+                user_info["exp"] = new_exp_time.timestamp()
+                user_info["type"] = "access_token"
+                token = encode_jwt(user_info)
+                new_refresh = token.pop("refresh_token")
+                return token
+    except Exception as e:
+        print(e)
+    raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="Invalid token!"
+    )
+
+
+async def check_access_token(
+        access_token: str,
+        session: AsyncSession,
+):
+    try:
+        user_info = await decode_jwt(token=access_token, session=session)
+        if user_info["type"] == "access_token":
+            if user_info["exp"] >= datetime.utcnow().timestamp():
+                return {"check_access": True}
+    except Exception as e:
+        print(e)
+        return {"check_access": False}
+    return {"check_access": False}
+
+
+async def add_token_to_black_list(
+        token: str,
+        session: AsyncSession
+):
+    black_token = TokenBlackList(token=token)
+    session.add(black_token)
+    await session.commit()
+    return {"status": status.HTTP_204_NO_CONTENT, "ditail": "logged out!"}
