@@ -1,10 +1,13 @@
 import os
+from datetime import datetime, timedelta
+from pathlib import Path
 
 from pydantic_settings import BaseSettings
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
 load_dotenv()
+BASE_DIR = Path(__file__).parent.parent
 
 
 class DBSettings(BaseModel):
@@ -22,9 +25,19 @@ class DBSettings(BaseModel):
     REDIS_PORT: int = os.getenv("REDIS_PORT")
 
 
+class AuthJWT(BaseModel):
+
+    private_key_path: Path = BASE_DIR / "certs" / "jwt-private.pem"
+    public_key_path: Path = BASE_DIR / "certs" / "jwt-public.pem"
+    algorithm: str = "RS256"
+    access_token_expire: datetime = timedelta(minutes=15)
+    refresh_token_expire: datetime = timedelta(days=7)
+
+
 class Settings(BaseSettings):
 
     db: DBSettings = DBSettings()
+    auth_jwt: AuthJWT = AuthJWT()
 
     SENDGRID_API_KEY: str = os.getenv("SENDGRID_API_KEY")
     DEFAULT_FROM_EMAIL: str = os.getenv("DEFAULT_FROM_EMAIL")
