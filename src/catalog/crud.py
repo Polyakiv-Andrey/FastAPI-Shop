@@ -45,3 +45,20 @@ async def update_catalog_item_in_db(
     await session.commit()
 
     return catalog_item
+
+
+async def delete_catalog_item_from_db(
+    item_id: int,
+    session: AsyncSession,
+):
+    catalog_item: CatalogItem | None = await session.get(CatalogItem, item_id)
+    if catalog_item is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Catalog item not found!")
+    if catalog_item.item_image_url:
+        current_image_path = catalog_item.item_image_url.split("/")[-1]
+        current_image_path = os.path.join("media/images/catalog", current_image_path)
+        if os.path.exists(current_image_path):
+            os.remove(current_image_path)
+    await session.delete(catalog_item)
+    await session.commit()
+    return {"status": status.HTTP_204_NO_CONTENT}
