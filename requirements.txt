@@ -7,6 +7,7 @@ asyncpg==0.29.0
 bcrypt==4.1.1
 billiard==4.2.0
 celery==5.3.6
+certifi==2023.11.17
 cffi==1.16.0
 click==8.1.7
 click-didyoumean==0.3.0
@@ -22,7 +23,9 @@ fastapi-users-db-sqlalchemy==6.0.1
 flower==2.0.1
 greenlet==3.0.1
 h11==0.14.0
+httpcore==1.0.2
 httptools==0.6.1
+httpx==0.25.2
 humanize==4.9.0
 idna==3.6
 kombu==5.3.4

@@ -21,7 +21,7 @@ from src.auth.services import (
 from src.auth.utils import get_current_token_payload, validate_auth_user
 from src.database import db
 
-auth_router = APIRouter(prefix="/auth")
+auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 @auth_router.post("/send-registration-otp/")

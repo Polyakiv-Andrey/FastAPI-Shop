@@ -10,6 +10,7 @@ from src.auth.schemas import CreatRegistrationOTP, UserCreate, ConfirmOTP, UserC
 from src.auth.utils import hash_password, get_current_token_payload
 from src.celery import send_mail
 from src.config import settings
+from src.database import db
 
 
 async def create_registration_otp(session: AsyncSession, otp: CreatRegistrationOTP):
@@ -109,7 +110,7 @@ async def create_user(session: AsyncSession, user: UserCreate):
 
 
 async def get_current_user(
-    session: AsyncSession,
+    session: AsyncSession = Depends(db.scoped_session_dependency),
     payload: dict = Depends(get_current_token_payload),
 ):
     token_type = payload.get("type")
@@ -124,6 +125,14 @@ async def get_current_user(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="token invalid (user not found)",
     )
+
+
+def get_admin(
+        user: User = Depends(get_current_user)
+):
+    if user.is_superuser is False:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+    return user
 
 
 async def create_change_password_otp(

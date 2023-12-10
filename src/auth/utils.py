@@ -10,7 +10,7 @@ from src.auth.models import User
 from src.database import db
 
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="/auth/login/",
+    tokenUrl="/api/auth/login/",
 )
 
 
