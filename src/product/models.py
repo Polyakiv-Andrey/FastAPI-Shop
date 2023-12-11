@@ -19,7 +19,7 @@ class Product(Base):
     data_created: Mapped[datetime] = mapped_column(default=datetime.utcnow)
 
     catalog_item_id: Mapped[int] = mapped_column(ForeignKey("catalogitem.id"))
-    catalog_item = relationship(CatalogItem, back_populates="products")
+    catalog_item = relationship("CatalogItem", back_populates="product")
 
     def __repr__(self):
         return self.name
