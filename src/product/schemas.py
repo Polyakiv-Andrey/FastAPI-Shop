@@ -40,3 +40,11 @@ class PaginationListProducts(BaseModel):
     count: int
     result: List[ListProducts]
 
+
+class UpdateProduct(BaseModel):
+    name: str | None
+    price: int | None
+    description: str | None
+    quantity: int | None
+    manufacturer: str | None
+    catalog_item_id: int | None

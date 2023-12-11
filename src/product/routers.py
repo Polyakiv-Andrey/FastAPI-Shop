@@ -5,9 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.auth.services import get_admin
 from src.database import db
-from src.product.crud import create_product, upload_product_image_file, get_product_by_id
+from src.product.crud import create_product, upload_product_image_file, get_product_by_id, update_product_by_id, \
+    delete_product_by_id
 from src.product.models import Product
-from src.product.schemas import CreateProduct, ReadProduct, PaginationListProducts
+from src.product.schemas import CreateProduct, ReadProduct, PaginationListProducts, UpdateProduct
 from src.utils import pagination_dependency, get_list_objects
 
 product_router = APIRouter(prefix="/product", tags=["Product"])
@@ -54,4 +55,23 @@ async def get_list_product(
     session: AsyncSession = Depends(db.scoped_session_dependency),
 ):
     response = await get_list_objects(session=session, pagination=pagination, model=Product)
+    return response
+
+
+@product_router.patch("/{product_id}/", response_model=ReadProduct)
+async def update_product(
+    product_id: int,
+    product: UpdateProduct,
+    session: AsyncSession = Depends(db.scoped_session_dependency),
+):
+    response = await update_product_by_id(product_id, product, session)
+    return response
+
+
+@product_router.delete("/{product_id}/")
+async def delete_product(
+    product_id: int,
+    session: AsyncSession = Depends(db.scoped_session_dependency),
+):
+    response = await delete_product_by_id(product_id, session)
     return response

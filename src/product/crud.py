@@ -2,12 +2,14 @@ import os
 
 from fastapi import Depends, UploadFile, HTTPException, status
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.exc import NoResultFound
 
 from src.database import db
 from src.product.models import Product
+from src.product.schemas import UpdateProduct
 from src.utils import upload_image
 
 
@@ -61,3 +63,36 @@ async def get_product_by_id(
         return product.scalar_one()
     except NoResultFound:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+
+async def update_product_by_id(
+    product_id: int,
+    product_update: UpdateProduct,
+    session: AsyncSession = Depends(db.scoped_session_dependency),
+):
+    product = await session.get(Product, product_id)
+    if product is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    for name, value in product_update.model_dump().items():
+        setattr(product, name, value)
+
+    try:
+        await session.commit()
+    except IntegrityError:
+        await session.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Catalog item dose not exist!.")
+    stmt = select(Product).options(joinedload(Product.catalog_item)).where(Product.id == product_id)
+    product_model = await session.execute(stmt)
+    await session.close()
+    return product_model.scalar_one()
+
+
+async def delete_product_by_id(
+    product_id: int,
+    session: AsyncSession = Depends(db.scoped_session_dependency),
+):
+    product = await session.get(Product, product_id)
+    await session.delete(product)
+    await session.commit()
+    return {"status": status.HTTP_204_NO_CONTENT}
