@@ -4,6 +4,7 @@ from fastapi import Depends, UploadFile, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
+from sqlalchemy.orm.exc import NoResultFound
 
 from src.database import db
 from src.product.models import Product
@@ -47,3 +48,16 @@ async def upload_product_image_file(
         return product_model.scalar_one()
     await session.close()
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+
+async def get_product_by_id(
+    product_id: int,
+    session: AsyncSession
+):
+    stmt = select(Product).options(joinedload(Product.catalog_item)).where(Product.id == product_id)
+    product = await session.execute(stmt)
+    await session.close()
+    try:
+        return product.scalar_one()
+    except NoResultFound:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)

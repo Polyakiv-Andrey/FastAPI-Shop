@@ -5,9 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.auth.services import get_admin
 from src.database import db
-from src.product.crud import create_product, upload_product_image_file
+from src.product.crud import create_product, upload_product_image_file, get_product_by_id
 from src.product.models import Product
-from src.product.schemas import CreateProduct, ReadProduct
+from src.product.schemas import CreateProduct, ReadProduct, PaginationListProducts
+from src.utils import pagination_dependency, get_list_objects
 
 product_router = APIRouter(prefix="/product", tags=["Product"])
 
@@ -35,4 +36,22 @@ async def upload_product_image(
     is_admin: dict = Depends(get_admin),
 ):
     response = await upload_product_image_file(product_id, image, session)
+    return response
+
+
+@product_router.get("/{product_id}/", response_model=ReadProduct)
+async def get_one_product(
+    product_id: int,
+    session: AsyncSession = Depends(db.scoped_session_dependency),
+):
+    response = await get_product_by_id(product_id, session)
+    return response
+
+
+@product_router.get("/", response_model=PaginationListProducts)
+async def get_list_product(
+    pagination: dict = Depends(pagination_dependency),
+    session: AsyncSession = Depends(db.scoped_session_dependency),
+):
+    response = await get_list_objects(session=session, pagination=pagination, model=Product)
     return response

@@ -67,7 +67,7 @@ async def get_catalog_item_endpoint(
     return response
 
 
-@catalog_router.get("/catalog/")
+@catalog_router.get("/")
 async def get_catalog(
         session: AsyncSession = Depends(db.scoped_session_dependency),
         pagination: dict = Depends(pagination_dependency)

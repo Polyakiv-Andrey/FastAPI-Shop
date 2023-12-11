@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from fastapi import UploadFile
 from pydantic import BaseModel
@@ -25,3 +26,17 @@ class ReadProduct(BaseModel):
     image_url: str | None
     data_created: datetime
     catalog_item: ReadCatalogItem
+
+
+class ListProducts(BaseModel):
+    id: int
+    name: str
+    price: int
+    quantity: int
+    image_url: str | None
+
+
+class PaginationListProducts(BaseModel):
+    count: int
+    result: List[ListProducts]
+
