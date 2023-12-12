@@ -1,6 +1,7 @@
 from fastapi import Depends, Request
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from src.auth.models import User
 
@@ -92,4 +93,37 @@ async def add_goods_to_basket(
     await session.commit()
 
     return good
+
+
+async def get_basket_content(
+        basket: Basket,
+        session: AsyncSession = Depends(db.scoped_session_dependency)
+):
+    stmt = select(Goods).options(joinedload(Goods.product)).where(Goods.basket_id == basket.id)
+    result = await session.execute(stmt)
+    goods_in_basket = result.scalars().all()
+
+    basket_contents = [{
+        "product": {
+            "id": good.product.id,
+            "name": good.product.name,
+            "price": good.product.price,
+            "image_url": good.product.image_url,
+            "description": good.product.description,
+            "quantity": good.product.quantity,
+            "manufacturer": good.product.manufacturer,
+        },
+        "amount": good.amount
+    } for good in goods_in_basket]
+
+    total_price = sum(good.product.price * good.amount for good in goods_in_basket)
+
+    result = {
+        "basket_id": basket.id,
+        "customer_id": basket.customer_id,
+        "total_price": total_price,
+        "goods": basket_contents,
+    }
+    return result
+
 

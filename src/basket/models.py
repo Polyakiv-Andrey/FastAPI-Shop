@@ -29,10 +29,6 @@ class Basket(Base):
 
     goods = relationship("Goods", back_populates="basket")
 
-    @property
-    def total_price(self):
-        return sum(good.product.price * good.amount for good in self.goods)
-
 
 class Goods(Base):
 
