@@ -63,6 +63,7 @@ async def update_product(
     product_id: int,
     product: UpdateProduct,
     session: AsyncSession = Depends(db.scoped_session_dependency),
+    is_admin: dict = Depends(get_admin),
 ):
     response = await update_product_by_id(product_id, product, session)
     return response
@@ -72,6 +73,7 @@ async def update_product(
 async def delete_product(
     product_id: int,
     session: AsyncSession = Depends(db.scoped_session_dependency),
+    is_admin: dict = Depends(get_admin),
 ):
     response = await delete_product_by_id(product_id, session)
     return response

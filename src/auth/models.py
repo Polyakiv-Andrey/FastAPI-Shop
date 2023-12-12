@@ -1,10 +1,13 @@
 from datetime import datetime
-from typing import Literal, get_args
+from typing import Literal, get_args, TYPE_CHECKING
 
 from sqlalchemy import Enum
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database import Base
+
+if TYPE_CHECKING:
+    from src.basket.models import Buyer
 
 
 class User(Base):
@@ -14,6 +17,8 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
     is_superuser: Mapped[bool] = mapped_column(default=False, nullable=False)
     data_created: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+
+    buyer: Mapped["Buyer"] = relationship("Buyer", back_populates="user")
 
     def __repr__(self) -> str:
         return self.email
