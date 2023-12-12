@@ -6,9 +6,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database import Base
 
-if TYPE_CHECKING:
-    from src.basket.models import Buyer
-
 
 class User(Base):
 
@@ -18,7 +15,7 @@ class User(Base):
     is_superuser: Mapped[bool] = mapped_column(default=False, nullable=False)
     data_created: Mapped[datetime] = mapped_column(default=datetime.utcnow)
 
-    buyer: Mapped["Buyer"] = relationship("Buyer", back_populates="user")
+    customer = relationship("Customer", back_populates="user")
 
     def __repr__(self) -> str:
         return self.email

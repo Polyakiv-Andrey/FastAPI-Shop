@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 import uvicorn
+from starlette.middleware import Middleware
 
 from src.apis.routers import main_router
+from src.middlewares import EnsureSessionIDMiddleware
 
-app = FastAPI()
+app = FastAPI(middleware=[Middleware(EnsureSessionIDMiddleware)])
 
 app.include_router(main_router)
 

@@ -1,14 +1,10 @@
 from datetime import datetime
-from typing import List, TYPE_CHECKING
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
 from src.database import Base
-
-if TYPE_CHECKING:
-    from src.basket.models import Goods
 
 
 class Product(Base):
@@ -24,7 +20,7 @@ class Product(Base):
     catalog_item_id: Mapped[int] = mapped_column(ForeignKey("catalogitem.id"))
     catalog_item = relationship("CatalogItem", back_populates="product")
 
-    goods: Mapped[List["Goods"]] = relationship("Goods", back_populates="product")
+    goods = relationship("Goods", back_populates="product")
 
     def __repr__(self):
         return self.name
