@@ -18,6 +18,8 @@ class Customer(Base):
 
     id_visit_session: Mapped[str]
 
+    transactions = relationship("Transaction", back_populates="customer")
+
     def __repr__(self):
         return self.id_visit_session
 

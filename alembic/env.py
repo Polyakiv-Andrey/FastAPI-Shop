@@ -11,6 +11,7 @@ from src.auth.models import *
 from src.catalog.models import *
 from src.product.models import *
 from src.basket.models import *
+from src.payments.models import *
 
 from src.config import settings
 

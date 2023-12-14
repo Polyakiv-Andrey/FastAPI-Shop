@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Тестовая Форма Оплаты</title>
+    <script src="//static.liqpay.ua/libjs/checkout.js" async></script>
+</head>
+<body>
+    <button id="payButton">Оплатить</button>
+    <div id="liqpay_checkout"></div>
+
+    <script>
+        document.getElementById('payButton').addEventListener('click', function() {
+            fetch('http://localhost:8000/api/payment/pay/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(data => {
+                LiqPayCheckout.init({
+                    data: data.data,
+                    signature: data.signature,
+                    embedTo: "#liqpay_checkout",
+                    mode: "embed" // embed или popup
+                }).on("liqpay.callback", function(data) {
+                    console.log(data.status);
+                    console.log(data);
+                }).on("liqpay.ready", function(data) {
+                    // ready
+                }).on("liqpay.close", function(data) {
+                    // close
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

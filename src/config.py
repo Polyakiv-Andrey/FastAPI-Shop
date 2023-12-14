@@ -39,6 +39,11 @@ class Settings(BaseSettings):
     db: DBSettings = DBSettings()
     auth_jwt: AuthJWT = AuthJWT()
 
+    current_host: str = "https://0cd6-91-211-120-11.ngrok-free.app"
+
+    LIQPAY_PUBLIC_KEY: str = os.getenv("LIQPAY_PUBLIC_KEY")
+    LIQPAY_PRIVATE_KEY: str = os.getenv("LIQPAY_PRIVATE_KEY")
+
     SENDGRID_API_KEY: str = os.getenv("SENDGRID_API_KEY")
     DEFAULT_FROM_EMAIL: str = os.getenv("DEFAULT_FROM_EMAIL")
     PASSWORD_RESET_TEMPLATE_ID: str = os.getenv("PASSWORD_RESET_TEMPLATE_ID")
