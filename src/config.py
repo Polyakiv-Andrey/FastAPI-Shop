@@ -41,6 +41,8 @@ class Settings(BaseSettings):
 
     current_host: str = "https://0cd6-91-211-120-11.ngrok-free.app"
 
+    NOVA_POSTA_KEY: str = os.getenv("NOVA_POSTA_KEY")
+
     LIQPAY_PUBLIC_KEY: str = os.getenv("LIQPAY_PUBLIC_KEY")
     LIQPAY_PRIVATE_KEY: str = os.getenv("LIQPAY_PRIVATE_KEY")
 
