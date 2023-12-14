@@ -25,5 +25,7 @@ class Transaction(Base):
     customer_id: Mapped[int] = mapped_column(ForeignKey("customer.id"), nullable=True)
     customer = relationship("Customer", back_populates="transactions")
 
+    order = relationship("Order", back_populates="transaction")
+
     def __repr__(self):
         return self.amount

@@ -4,13 +4,14 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 
 from src.database import Base
+from src.orders.models import order_goods_association
 
 if TYPE_CHECKING:
     from src.auth.models import User
 
 
 class Customer(Base):
-
+    orders = relationship("Order", back_populates="customer")
     delivery_detail = relationship("DeliveryDetail", back_populates="customer")
     basket = relationship("Basket", back_populates="customer")
 
@@ -35,10 +36,16 @@ class Basket(Base):
 
 class Goods(Base):
 
-    basket_id: Mapped[int] = mapped_column(ForeignKey("basket.id"))
+    basket_id: Mapped[int] = mapped_column(ForeignKey("basket.id"), nullable=True)
     basket = relationship("Basket", back_populates="goods")
 
     product_id: Mapped[int] = mapped_column(ForeignKey("product.id"))
     product = relationship("Product", back_populates="goods")
 
     amount: Mapped[int]
+
+    orders = relationship(
+        "Order",
+        secondary=order_goods_association,
+        back_populates="goods"
+    )

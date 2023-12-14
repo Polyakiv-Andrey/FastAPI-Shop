@@ -11,7 +11,7 @@ from src.basket.models import Customer, Basket
 from src.basket.utils import get_user_or_none
 from src.config import settings
 from src.database import db
-from src.payments.crud import create_transaction, update_transaction, create_order, clean_basket
+from src.payments.crud import create_transaction, update_transaction, create_order
 
 payment_router = APIRouter(prefix="/payment", tags=["Payment"])
 
@@ -59,5 +59,4 @@ async def pay_callback_view(
     transaction = await update_transaction(response, session)
     if transaction.transaction_status == "success":
         await create_order(transaction, session)
-        await clean_basket(transaction, session)
     return {"message": "Callback received"}

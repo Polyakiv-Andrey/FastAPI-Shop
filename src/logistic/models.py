@@ -15,6 +15,8 @@ class DeliveryDetail(Base):
     customer_id: Mapped[int] = mapped_column(ForeignKey("customer.id"))
     customer = relationship("Customer", back_populates="delivery_detail")
 
+    order = relationship("Order", back_populates="delivery_detail")
+
 
 class NovaPosta(Base):
     number: Mapped[str]
