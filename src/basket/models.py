@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 class Customer(Base):
 
+    delivery_detail = relationship("DeliveryDetail", back_populates="customer")
     basket = relationship("Basket", back_populates="customer")
 
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=True)

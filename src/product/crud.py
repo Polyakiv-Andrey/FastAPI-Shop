@@ -75,7 +75,8 @@ async def update_product_by_id(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
     for name, value in product_update.model_dump().items():
-        setattr(product, name, value)
+        if value is not None:
+            setattr(product, name, value)
 
     try:
         await session.commit()
