@@ -31,7 +31,7 @@ Contributions are welcome! For major changes, please open an issue first to disc
 
 ## Docs
 
-![Screenshot 2023-12-15 at 11.33.11.png](static%2Freadme%2FScreenshot%202023-12-15%20at%2011.33.11.png)
-![Screenshot 2023-12-15 at 11.32.50.png](static%2Freadme%2FScreenshot%202023-12-15%20at%2011.32.50.png)
-![Screenshot 2023-12-15 at 11.32.17.png](static%2Freadme%2FScreenshot%202023-12-15%20at%2011.32.17.png)
 ![Screenshot 2023-12-15 at 11.31.40.png](static%2Freadme%2FScreenshot%202023-12-15%20at%2011.31.40.png)
+![Screenshot 2023-12-15 at 11.32.17.png](static%2Freadme%2FScreenshot%202023-12-15%20at%2011.32.17.png)
+![Screenshot 2023-12-15 at 11.32.50.png](static%2Freadme%2FScreenshot%202023-12-15%20at%2011.32.50.png)
+![Screenshot 2023-12-15 at 11.33.11.png](static%2Freadme%2FScreenshot%202023-12-15%20at%2011.33.11.png)
